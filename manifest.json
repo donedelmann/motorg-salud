@@ -1,0 +1,10 @@
+{
+  "short_name": "Motor G",
+  "name": "Motor G | Salud",
+  "start_url": "./",
+  "scope": "./",
+  "background_color": "#111827",
+  "theme_color": "#111827",
+  "display": "standalone",
+  "orientation": "portrait"
+}
