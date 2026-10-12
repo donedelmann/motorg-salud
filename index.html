@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motor G | Salud</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#111827">
+    <style>
+        body { 
+            background-color: #111827; 
+            color: #f3f4f6; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            padding: 16px; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            min-height: 92vh; 
+        }
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid #1f2937; 
+            padding-bottom: 12px; 
+        }
+        h1 { font-size: 1.25rem; font-weight: bold; color: #60a5fa; margin: 0; }
+        p { font-size: 0.75rem; color: #9ca3af; margin: 2px 0 0 0; }
+        .badge { 
+            background: rgba(30, 58, 138, 0.6); 
+            border: 1px solid rgba(59, 130, 246, 0.4); 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 10px; 
+            color: #bfdbfe; 
+            font-weight: 600;
+        }
+        .install-bar {
+            display: none;
+            background: #1e3a8a;
+            border: 1px solid #3b82f6;
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .install-bar button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-top: 6px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .card { 
+            background: rgba(31, 41, 55, 0.9); 
+            padding: 20px; 
+            border-radius: 16px; 
+            border: 1px solid #374151; 
+            text-align: center; 
+            margin: 15px 0; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        .mic-btn { 
+            width: 88px; 
+            height: 88px; 
+            border-radius: 50%; 
+            background: #dc2626; 
+            border: none; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin: 0 auto 12px auto; 
+            cursor: pointer; 
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
+            transition: transform 0.1s ease;
+        }
+        .mic-btn.active { 
+            background: #22c55e; 
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.5);
+            animation: pulse 1.5s infinite; 
+        }
+        @keyframes pulse { 
+            0% { transform: scale(1); } 
+            50% { transform: scale(1.05); } 
+            100% { transform: scale(1); } 
+        }
+        textarea { 
+            width: 100%; 
+            background: #030712; 
+            border: 1px solid #374151; 
+            border-radius: 8px; 
+            padding: 10px; 
+            color: #f3f4f6; 
+            font-size: 12px; 
+            box-sizing: border-box; 
+            margin-top: 6px; 
+            resize: none;
+        }
+        .action-btn { 
+            margin-top: 10px; 
+            width: 100%; 
+            background: #2563eb; 
+            color: white; 
+            border: none; 
+            padding: 10px; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            font-size: 12px; 
+            cursor: pointer; 
+        }
+        .results { 
+            background: rgba(31, 41, 55, 0.9); 
+            padding: 16px; 
+            border-radius: 12px; 
+            border: 1px solid #374151; 
+            font-size: 12px; 
+        }
+        .results h3 { 
+            font-size: 11px; 
+            border-bottom: 1px solid #374151; 
+            padding-bottom: 6px; 
+            color: #93c5fd; 
+            margin-top: 0; 
+        }
+        .label-title { 
+            font-size: 10px; 
+            font-weight: bold; 
+            color: #60a5fa; 
+            text-transform: uppercase; 
+            margin-top: 10px; 
+            display: block; 
+        }
+        .output-text { color: #e5e7eb; font-size: 11px; margin: 3px 0; }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>Motor G | Salud</h1>
+            <p>Capa Invisible de Voz (Cero Fricción)</p>
+        </div>
+        <span class="badge">San Salvador</span>
+    </header>
+
+    <div id="installContainer" class="install-bar">
+        <span style="font-size: 12px; font-weight: bold;">¿Instalar Motor G en el teléfono?</span>
+        <button id="pwaInstallBtn">INSTALAR APLICACIÓN</button>
+    </div>
+
+    <div class="card">
+        <h2 style="font-size: 14px; font-weight: bold; margin-bottom: 4px; color: #e5e7eb;">Dictado Clínico de Un Solo Toque</h2>
+        <p style="margin-bottom: 16px;">Presione el micrófono para iniciar consulta</p>
+        
+        <button id="recordBtn" class="mic-btn" onclick="toggleSpeechRecognition()">
+            <svg style="width: 36px; height: 36px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+            </svg>
+        </button>
+        <span id="recordStatus" style="font-size: 11px; color: #9ca3af; font-weight: 500;">Toque para iniciar dictado</span>
+        
+        <div style="text-align: left; margin-top: 14px;">
+            <label style="font-size: 11px; font-weight: bold; color: #9ca3af;">Transcripción / Caso clínico:</label>
+            <textarea id="clinicalInput" rows="3" placeholder="Dicta o escribe el caso clínico aquí..."></textarea>
+            <button class="action-btn" onclick="processClinicalData()">Estructurar con Motor G</button>
+        </div>
+    </div>
+
+    <div class="results">
+        <h3>EXPEDIENTE ESTRUCTURADO (HL7 / FHIR)</h3>
+        <div>
+            <span class="label-title">1. Motivo:</span>
+            <p id="outMotivo" class="output-text">-</p>
+        </div>
+        <div>
+            <span class="label-title">2. Hallazgos / Exploración:</span>
+            <p id="outExploracion" class="output-text">-</p>
+        </div>
+        <div>
+            <span class="label-title">3. Diagnóstico CIE-10:</span>
+            <p id="outDiagnostico" class="output-text">-</p>
+        </div>
+        <div>
+            <span class="label-title">4. Prescripción / Receta:</span>
+            <p id="outReceta" class="output-text">-</p>
+        </div>
+    </div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW error:', err));
+        }
+
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installContainer').style.display = 'block';
+        });
+
+        document.getElementById('pwaInstallBtn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    document.getElementById('installContainer').style.display = 'none';
+                }
+                deferredPrompt = null;
+            }
+        });
+
+        let recognition;
+        let isListening = false;
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'es-SV';
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            recognition.onstart = function() {
+                isListening = true;
+                document.getElementById('recordBtn').classList.add('active');
+                document.getElementById('recordStatus').innerText = "Escuchando consulta médica...";
+            };
+
+            recognition.onresult = function(event) {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                document.getElementById('clinicalInput').value = transcript;
+            };
+
+            recognition.onerror = function(event) {
+                document.getElementById('recordStatus').innerText = "Error de audio: " + event.error;
+                stopMicUI();
+            };
+
+            recognition.onend = function() {
+                stopMicUI();
+                processClinicalData();
+            };
+        }
+
+        function toggleSpeechRecognition() {
+            if (!recognition) return;
+            if (isListening) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        }
+
+        function stopMicUI() {
+            isListening = false;
+            document.getElementById('recordBtn').classList.remove('active');
+            document.getElementById('recordStatus').innerText = "Toque para iniciar dictado";
+        }
+
+        function processClinicalData() {
+            const val = document.getElementById('clinicalInput').value;
+            if(!val.trim()) return;
+            
+            document.getElementById('outMotivo').innerText = val;
+            let hallazgos = "Exploración física general sin alteraciones agudas.";
+            let diag = "Z00.0 - Examen médico general";
+            let receta = "1. Medidas generales de higiene y control.";
+
+            const lower = val.toLowerCase();
+            if (lower.includes('garganta') || lower.includes('faringe') || lower.includes('dolor al tragar')) {
+                hallazgos = "Orofaringe hiperémica, amígdalas grado II sin exudado purulento.";
+                diag = "J02.9 - Faringitis aguda";
+                receta = "1. Ibuprofeno 600mg VO c/8h por 5 días. 2. Reposo vocal.";
+            } else if (lower.includes('tos') || lower.includes('pecho') || lower.includes('respirar')) {
+                hallazgos = "Campos pulmonares con murmullo vesicular rudo, sibilancias difusas leves.";
+                diag = "J20.9 - Bronquitis aguda";
+                receta = "1. Salbutamol spray 2 puffs c/6h PRN. 2. Loratadina 10mg c/24h.";
+            } else if (lower.includes('presión') || lower.includes('cabeza') || lower.includes('espalda')) {
+                hallazgos = "PA 140/90 mmHg, contractura muscular paravertebral dorsal.";
+                diag = "I10 - Hipertensión arterial / M54.5 - Lumbago";
+                receta = "1. Enalapril 10mg VO c/24h. 2. Diclofenaco gel tópico c/8h.";
+            }
+
+            document.getElementById('outExploracion').innerText = hallazgos;
+            document.getElementById('outDiagnostico').innerText = diag;
+            document.getElementById('outReceta').innerText = receta;
+        }
+    </script>
+</body>
+</html>
