@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Motor G | Salud</title>
-    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#111827">
     <style>
         body { 
@@ -192,10 +191,6 @@
     </div>
 
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW error:', err));
-        }
-
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -269,23 +264,27 @@
             if(!val.trim()) return;
             
             document.getElementById('outMotivo').innerText = val;
-            let hallazgos = "Exploración física general sin alteraciones agudas.";
-            let diag = "Z00.0 - Examen médico general";
-            let receta = "1. Medidas generales de higiene y control.";
+            let hallazgos = "Paciente consciente, orientado, sin datos de alarma inmediatos.";
+            let diag = "R69 - Enfermedad no especificada / Consulta general";
+            let receta = "1. Reposo relativo por 24-48 horas. 2. Medicación sintomática de soporte según evolución.";
 
             const lower = val.toLowerCase();
-            if (lower.includes('garganta') || lower.includes('faringe') || lower.includes('dolor al tragar')) {
-                hallazgos = "Orofaringe hiperémica, amígdalas grado II sin exudado purulento.";
+            if (lower.includes('garganta') || lower.includes('faringe') || lower.includes('tragar') || lower.includes('amígdala')) {
+                hallazgos = "Orofaringe hiperémica, congestión mucosa sin placas purulentas evidentes.";
                 diag = "J02.9 - Faringitis aguda";
-                receta = "1. Ibuprofeno 600mg VO c/8h por 5 días. 2. Reposo vocal.";
-            } else if (lower.includes('tos') || lower.includes('pecho') || lower.includes('respirar')) {
-                hallazgos = "Campos pulmonares con murmullo vesicular rudo, sibilancias difusas leves.";
-                diag = "J20.9 - Bronquitis aguda";
-                receta = "1. Salbutamol spray 2 puffs c/6h PRN. 2. Loratadina 10mg c/24h.";
-            } else if (lower.includes('presión') || lower.includes('cabeza') || lower.includes('espalda')) {
-                hallazgos = "PA 140/90 mmHg, contractura muscular paravertebral dorsal.";
-                diag = "I10 - Hipertensión arterial / M54.5 - Lumbago";
-                receta = "1. Enalapril 10mg VO c/24h. 2. Diclofenaco gel tópico c/8h.";
+                receta = "1. Ibuprofeno 600mg VO c/8h por 5 días. 2. Abundantes líquidos claros.";
+            } else if (lower.includes('tos') || lower.includes('pecho') || lower.includes('respirar') || lower.includes('gripe') || lower.includes('flema')) {
+                hallazgos = "Murmullo vesicular conservado, ligera ronquera ocasional sin sibilancias audibles.";
+                diag = "J06.9 - Infección aguda de las vías respiratorias superiores";
+                receta = "1. Loratadina 10mg VO c/24h por 5 días. 2. Acetaminofén 500mg VO c/6h PRN fiebre.";
+            } else if (lower.includes('presión') || lower.includes('cabeza') || lower.includes('mareo') || lower.includes('cefalea') || lower.includes('espalda')) {
+                hallazgos = "PA elevada en medición aislada o contractura muscular paravertebral evaluada.";
+                diag = "I10 - Hipertensión arterial esencial / M54.5 - Lumbago o cefalea tensional";
+                receta = "1. Reposo relativo en ambiente tranquilo. 2. Diclofenaco gel tópico o analgésico oral según dolor. 3. Control de presión arterial.";
+            } else if (lower.includes('estómago') || lower.includes('dolor abdominal') || lower.includes('náusea') || lower.includes('diarrea')) {
+                hallazgos = "Abdomen blando, depresible, doloroso a la palpación superficial en mesogastrio, sin rebote.";
+                diag = "K52.9 - Gastroenteritis y colitis no especificadas";
+                receta = "1. Suero oral fraccionado. 2. Trimebutina 200mg VO c/8h. 3. Dieta blanda astringente.";
             }
 
             document.getElementById('outExploracion').innerText = hallazgos;
